@@ -24,6 +24,6 @@
     downloadButton.addEventListener('click', () => {
         const textContent = "Đây là nội dung văn bản mà bạn muốn lưu!";
         // Gọi hàm Kotlin thông qua interface để lưu file
-        window.JavaInterface.saveTextFile("example", textContent);
+        window.JavaInterface.saveTextToFile("example.txt", "Nội dung văn bản dài cần lưu vào file txt!");
     });
 })();
