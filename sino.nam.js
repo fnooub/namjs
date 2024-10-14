@@ -19,8 +19,7 @@
 
         var ebookTitle = document.querySelector('h1').innerText.trim(),
             fileName = ebookTitle + '.txt',
-            beginEnd = '',
-            blob;
+            beginEnd = '';
 
         if (titleError.length) {
             titleError = LINE + 'Các chương lỗi: ' + titleError.join(', ') + LINE;
@@ -36,16 +35,16 @@
 
         console.log(txt);
 
-        blob = new Blob([txt], {
-            encoding: 'UTF-8',
-            type: 'text/plain; charset=UTF-8'
-        });
+        // Ghi nội dung vào tệp thông qua phương thức Java
+        window.JavaInterface.saveTextFile(fileName, txt); // Ghi tệp txt
 
-        downloadLink.href = window.URL.createObjectURL(blob);
-        downloadLink.download = fileName;
-        downloadLink.innerText = 'Tải xong, click để tải về';
-        downloadLink.removeEventListener('click', saveEbook); // Off click event
-        downloadStatus.style.backgroundColor = 'greenyellow';
+        // Cập nhật trạng thái tải xuống
+        downloadLink.innerText = 'Tải xong'; // Cập nhật văn bản hiển thị
+        downloadLink.style.display = 'block'; // Đảm bảo rằng liên kết tải về được hiển thị
+        downloadStatus.style.backgroundColor = 'greenyellow'; // Cập nhật màu nền trạng thái tải
+
+        // Gỡ bỏ sự kiện không cần thiết
+        downloadLink.removeEventListener('click', saveEbook); // Tắt sự kiện click
 
         window.removeEventListener('beforeunload', beforeUnloadHandler);
 
