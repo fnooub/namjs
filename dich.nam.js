@@ -22,7 +22,7 @@ async function translateNode(domNode) {
     const chineseText = stackToStockThings.map(node => node.nodeValue).join('---|---');
 
     try {
-        const translatedText = await window.JavaInterface.quicktranslator(chineseText);
+        const translatedText = await window.Dich.qt(chineseText);
         console.log(translatedText);
         
         const translatedArr = translatedText.split('---|---');
