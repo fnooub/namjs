@@ -36,7 +36,7 @@
         console.log(txt);
 
         // Ghi nội dung vào tệp thông qua phương thức Java
-        window.WQT.savetxt(fileName, txt); // Ghi tệp txt
+        window.Dich.savetxt(fileName, txt); // Ghi tệp txt
 
         // Cập nhật trạng thái tải xuống
         downloadLink.innerText = 'Tải xong'; // Cập nhật văn bản hiển thị
