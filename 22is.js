@@ -1,7 +1,8 @@
-(function() {
+(function () {
     'use strict';
 
     if (!window.location.href.startsWith("https://www.22is.com/read/")) return;
+
     // Tạo nút tải xuống và thêm vào trang
     const downloadButton = document.createElement('a');
     downloadButton.style = 'background-color: lightblue; padding: 5px; text-decoration: none; position: fixed; top: 20px; left: 20px; z-index: 9999;';
@@ -18,28 +19,30 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Hàm lấy các liên kết từ các trang
-    async function fetchLinks(baseURL, maxPage) {
-      const allLinks = [];
-
-      try {
-            const pageLinks = doc.querySelectorAll('#chapterList a');
-
-            // Lặp qua các thẻ a để lấy href và nội dung
+    // Hàm lấy các liên kết từ trang
+    async function fetchLinks() {
+        const allLinks = [];
+        try {
+            const pageLinks = document.querySelectorAll('#chapterList a');
             pageLinks.forEach(link => {
+                const linkText = link.textContent.trim();
                 const linkHref = link.getAttribute('href');
-                allLinks.push({ text: linkText, href: location.origin + linkHref });
+                allLinks.push({ text: linkText, href: new URL(linkHref, location.origin).href });
             });
-
         } catch (error) {
-            console.error(`Error fetching page ${page}: `, error);
+            console.error('Lỗi khi lấy danh sách liên kết:', error);
         }
 
-        // Tiếp tục để lấy nội dung từ #acontent của từng liên kết trong allLinks
+        if (allLinks.length === 0) {
+            alert('Không tìm thấy liên kết nào!');
+            return;
+        }
+
+        console.log('Danh sách liên kết:', allLinks);
         await fetchContentFromLinks(allLinks);
     }
 
-    // Hàm lấy nội dung từ thẻ #acontent của các liên kết trong allLinks
+    // Hàm lấy nội dung từ thẻ .txtnav của các liên kết trong allLinks
     async function fetchContentFromLinks(links) {
         const allContent = [];
 
@@ -54,21 +57,21 @@
                 const response = await fetch(link.href);
                 const text = await response.text();
 
-                // Tạo DOM từ nội dung trang để lấy thẻ #acontent
+                // Tạo DOM từ nội dung trang để lấy thẻ .txtnav
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(text, 'text/html');
                 const content = doc.querySelector('.txtnav')?.textContent.trim() || '';
 
                 // Gộp link text và nội dung
-                const combinedContent = `${link.text.trim()}\n${content}`;
+                const combinedContent = `${link.text}\n${content}`;
 
                 // Thêm nội dung vào mảng allContent
                 allContent.push(combinedContent);
 
                 // Cập nhật tiến độ trong nút tải xuống
-                downloadButton.innerText = `Đang tải: ${i + 1} / ${links.length} - ${link.text}`;
+                downloadButton.innerText = `Đang tải: ${i + 1} / ${links.length}`;
             } catch (error) {
-                console.error(`Error fetching content from ${link.href}: `, error);
+                console.error(`Lỗi khi tải nội dung từ ${link.href}:`, error);
             }
         }
 
